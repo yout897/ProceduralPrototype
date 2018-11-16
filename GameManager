@@ -1,0 +1,105 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class GameManager : MonoBehaviour {
+
+
+    public Room[] rooms = new Room[9];
+    public Room[] floor = new Room[10];
+
+    private int held;
+    private Room prevPlaced;
+    private string upS = "Up",downS = "Down",rightS = "Right",leftS = "Left";
+
+    void Start () {
+        prevPlaced = new Room();
+        prevPlaced = floor[0];
+        for (int j = 0; j < floor.Length; j++)
+        {
+            Debug.Log("J: " + j);
+            RoomInArray(floor, rooms, j);
+            Debug.Log("Up: " + prevPlaced.up + "\nDown: " + prevPlaced.down + "\nLeft: " + prevPlaced.left + "\nRight: " + prevPlaced.right);
+        }
+    }
+	
+	// Update is called once per frame
+	void Update () {
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Application.LoadLevel(0);
+        }
+	}
+
+    bool CanBePlaced(Room _one, Room _two)
+    {
+        Debug.Log("Checking...");
+        if (_two.HasUp() == _one.HasDown() && _two.canConnectedWhere.Contains("Up"))
+        {
+            Debug.Log("Set Down");
+            _two.where = "Down";
+            _two.canConnectedWhere.Replace(upS,"");
+            _one.canConnectedWhere.Replace(downS,"");
+            return true;
+        }
+        else if (_two.HasDown() == _one.HasUp() && _two.canConnectedWhere.Contains("Down"))
+        {
+            Debug.Log("Set Up");
+            _two.where = "Up";
+            _two.canConnectedWhere.Replace(downS, "");
+            _one.canConnectedWhere.Replace(upS, "");
+            return true;
+        }
+        else if (_two.HasLeft() == _one.HasRight() && _two.canConnectedWhere.Contains("Left"))
+        {
+            Debug.Log("Set Right");
+            _two.where = "Right";
+            _two.canConnectedWhere.Replace(leftS, "");
+            _one.canConnectedWhere.Replace(rightS, "");
+            return true;
+        }
+        else if (_two.HasRight() == _one.HasLeft() && _two.canConnectedWhere.Contains("Right"))
+        {
+            Debug.Log("Set Left");
+            _two.where = "Left";
+            _two.canConnectedWhere.Replace(rightS, "");
+            _one.canConnectedWhere.Replace(leftS, "");
+            return true;
+        }
+        return false;
+    }
+
+    void RoomInArray(Room[] _floor,Room[] _rooms, int _num)
+    {
+        held = _num;
+        int rand = (int)(Random.Range(1,9));
+        Debug.Log("Random: " + rand);
+        if (CanBePlaced(_floor[_num],_rooms[rand]))
+        {
+            Debug.Log("Placed");
+            _floor[_num+1] = _rooms[rand];
+            _floor[_num].connected = true;
+            PlaceRoom(floor, _num);
+        }
+        else
+        {
+            Debug.Log("Held: " + held);
+            RoomInArray(_floor,_rooms,held);
+        }
+        
+    }
+
+    void PlaceRoom(Room[] _floor,int _num)
+    {
+        if (_floor[_num].where == "Down")
+            Instantiate(_floor[_num],(new Vector3(0,prevPlaced.transform.position.y - 10,0)),Quaternion.identity);
+        else if (_floor[_num].where == "Up")
+            Instantiate(_floor[_num], (new Vector3(0, prevPlaced.transform.position.y + 10, 0)), Quaternion.identity);
+        else if (_floor[_num].where == "Left")
+            Instantiate(_floor[_num], (new Vector3(prevPlaced.transform.position.x - 13,0 , 0)), Quaternion.identity);
+        else if (_floor[_num].where == "Down")
+            Instantiate(_floor[_num], (new Vector3(prevPlaced.transform.position.x + 13,0 , 0)), Quaternion.identity);
+        prevPlaced = _floor[_num];
+    }
+}
