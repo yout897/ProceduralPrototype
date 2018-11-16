@@ -1,0 +1,79 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Room : MonoBehaviour {
+
+    public bool up = false, down = false, left = false, right = false,connected = false;
+
+    public string where = "";
+    public string canConnectedWhere = " ";
+
+	// Use this for initialization
+	void Start () {
+        where = "";
+        canConnectedWhere = "";
+    }
+	
+	// Update is called once per frame
+	void Update () {
+		
+	}
+
+
+    public bool HasUp()
+    {
+        if (up)
+        {
+            canConnectedWhere += "Up";
+            return true;
+        }
+        else
+            return false; 
+        
+    }
+    public bool HasDown()
+    {
+        if (down)
+        {
+            canConnectedWhere += "Down";
+            return true;
+        }
+        else
+            return false;
+    }
+    public bool HasLeft()
+    {
+        if (left)
+        {
+            canConnectedWhere += "Left";
+            return true;
+        }
+        else
+            return false;
+    }
+    public bool HasRight()
+    {
+        if (right)
+        {
+            canConnectedWhere += "Right";
+            return true;
+        }
+        else
+            return false;
+    }
+
+
+    private void OnDrawGizmos()
+    {
+        if (up)
+            Gizmos.DrawWireCube(this.transform.position + new Vector3(0, 5, 0), new Vector3(2, 2, 0));
+        if (down)
+            Gizmos.DrawWireCube(this.transform.position + new Vector3(0, -5, 0), new Vector3(2, 2, 0));
+        if (left)
+            Gizmos.DrawWireCube(this.transform.position + new Vector3(-6, 0, 0), new Vector3(2, 2, 0));
+        if (right)
+            Gizmos.DrawWireCube(this.transform.position + new Vector3(6, 0, 0), new Vector3(2, 2, 0));
+    }
+
+}
