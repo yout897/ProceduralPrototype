@@ -5,29 +5,53 @@ using UnityEngine;
 public class Room : MonoBehaviour {
 
     public bool up = false, down = false, left = false, right = false,connected = false;
-
+    public GameObject obj;
     public string where = "";
-    public string canConnectedWhere = " ";
+    public int iD;
 
-	// Use this for initialization
-	void Start () {
+    public Room(int _iD,GameObject _obj)
+    {
+        obj = _obj;
+        
+        iD = _iD;
         where = "";
-        canConnectedWhere = "";
+        connected = false;
+        switch (iD)
+        {
+            case 1:
+                up = true; down = true; left = true; right = true;
+                break;
+            case 2:
+                up = true; down = false; left = true; right = false;
+                break;
+            case 3:
+                up = true; down = false; left = false; right = true;
+                break;
+            case 4:
+                up = true; down = true; left = true; right = false;
+                break;
+            case 5:
+                up = true; down = true; left = false; right = true;
+                break;
+            case 6:
+                up = false; down = true; left = false; right = true;
+                break;
+            case 7:
+                up = false; down = true; left = true; right = false;
+                break;
+            case 8:
+                up = false; down = false; left = true; right = false;
+                break;
+            case 9:
+                up = false; down = false; left = false; right = true;
+                break;
+        }
     }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
 
     public bool HasUp()
     {
         if (up)
-        {
-            canConnectedWhere += "Up";
             return true;
-        }
         else
             return false; 
         
@@ -35,45 +59,35 @@ public class Room : MonoBehaviour {
     public bool HasDown()
     {
         if (down)
-        {
-            canConnectedWhere += "Down";
             return true;
-        }
         else
             return false;
     }
     public bool HasLeft()
     {
         if (left)
-        {
-            canConnectedWhere += "Left";
             return true;
-        }
         else
             return false;
     }
     public bool HasRight()
     {
         if (right)
-        {
-            canConnectedWhere += "Right";
             return true;
-        }
         else
             return false;
     }
 
-
     private void OnDrawGizmos()
     {
         if (up)
-            Gizmos.DrawWireCube(this.transform.position + new Vector3(0, 5, 0), new Vector3(2, 2, 0));
+            Gizmos.DrawWireCube(obj.transform.position + new Vector3(0, 5, 0), new Vector3(2, 2, 0));
         if (down)
-            Gizmos.DrawWireCube(this.transform.position + new Vector3(0, -5, 0), new Vector3(2, 2, 0));
+            Gizmos.DrawWireCube(obj.transform.position + new Vector3(0, -5, 0), new Vector3(2, 2, 0));
         if (left)
-            Gizmos.DrawWireCube(this.transform.position + new Vector3(-6, 0, 0), new Vector3(2, 2, 0));
+            Gizmos.DrawWireCube(obj.transform.position + new Vector3(-6, 0, 0), new Vector3(2, 2, 0));
         if (right)
-            Gizmos.DrawWireCube(this.transform.position + new Vector3(6, 0, 0), new Vector3(2, 2, 0));
+            Gizmos.DrawWireCube(obj.transform.position + new Vector3(6, 0, 0), new Vector3(2, 2, 0));
     }
 
 }
