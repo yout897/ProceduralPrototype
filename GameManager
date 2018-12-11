@@ -7,19 +7,26 @@ public class GameManager : MonoBehaviour {
 
     public Room[] rooms = new Room[9];
     public Room[] floor = new Room[10];
+    public GameObject objs;
 
     private int held;
     private Room prevPlaced;
     private string upS = "Up",downS = "Down",rightS = "Right",leftS = "Left";
 
     void Start () {
-        prevPlaced = new Room();
+
+        for (int d = 0;d<rooms.Length;d++)
+        {
+            rooms[d] = new Room(d,objs);
+        }
+        floor[0] = rooms[0];
         prevPlaced = floor[0];
+        Instantiate(floor[0].obj,new Vector3(0,0,0),Quaternion.identity);
         for (int j = 0; j < floor.Length; j++)
         {
             Debug.Log("J: " + j);
             RoomInArray(floor, rooms, j);
-            Debug.Log("Up: " + prevPlaced.up + "\nDown: " + prevPlaced.down + "\nLeft: " + prevPlaced.left + "\nRight: " + prevPlaced.right);
+            Debug.Log("Up: " + prevPlaced.up + "\tDown: " + prevPlaced.down + "\tLeft: " + prevPlaced.left + "\tRight: " + prevPlaced.right);
         }
     }
 	
@@ -35,36 +42,32 @@ public class GameManager : MonoBehaviour {
     bool CanBePlaced(Room _one, Room _two)
     {
         Debug.Log("Checking...");
-        if (_two.HasUp() == _one.HasDown() && _two.canConnectedWhere.Contains("Up"))
+        if (_two.HasUp() && _one.HasDown())
         {
-            Debug.Log("Set Down");
             _two.where = "Down";
-            _two.canConnectedWhere.Replace(upS,"");
-            _one.canConnectedWhere.Replace(downS,"");
+            _one.down = false;
+            _two.up = false;
             return true;
         }
-        else if (_two.HasDown() == _one.HasUp() && _two.canConnectedWhere.Contains("Down"))
+        else if (_two.HasDown() == _one.HasUp() )
         {
-            Debug.Log("Set Up");
             _two.where = "Up";
-            _two.canConnectedWhere.Replace(downS, "");
-            _one.canConnectedWhere.Replace(upS, "");
+            _one.up = false;
+            _two.down = false;
             return true;
         }
-        else if (_two.HasLeft() == _one.HasRight() && _two.canConnectedWhere.Contains("Left"))
+        else if (_two.HasLeft() == _one.HasRight() )
         {
-            Debug.Log("Set Right");
             _two.where = "Right";
-            _two.canConnectedWhere.Replace(leftS, "");
-            _one.canConnectedWhere.Replace(rightS, "");
+            _one.right = false;
+            _two.left = false;
             return true;
         }
-        else if (_two.HasRight() == _one.HasLeft() && _two.canConnectedWhere.Contains("Right"))
+        else if (_two.HasRight() == _one.HasLeft() )
         {
-            Debug.Log("Set Left");
             _two.where = "Left";
-            _two.canConnectedWhere.Replace(rightS, "");
-            _one.canConnectedWhere.Replace(leftS, "");
+            _one.left = false;
+            _two.right = false;
             return true;
         }
         return false;
@@ -81,6 +84,7 @@ public class GameManager : MonoBehaviour {
             _floor[_num+1] = _rooms[rand];
             _floor[_num].connected = true;
             PlaceRoom(floor, _num);
+            
         }
         else
         {
@@ -92,14 +96,17 @@ public class GameManager : MonoBehaviour {
 
     void PlaceRoom(Room[] _floor,int _num)
     {
+        Debug.Log("Prev:" + prevPlaced);
+        Debug.Log("Cur:" + _floor[_num]);
         if (_floor[_num].where == "Down")
-            Instantiate(_floor[_num],(new Vector3(0,prevPlaced.transform.position.y - 10,0)),Quaternion.identity);
+            Instantiate(_floor[_num].obj,(new Vector3(0,prevPlaced.obj.transform.position.y - 10,0)),Quaternion.identity);
         else if (_floor[_num].where == "Up")
-            Instantiate(_floor[_num], (new Vector3(0, prevPlaced.transform.position.y + 10, 0)), Quaternion.identity);
+            Instantiate(_floor[_num].obj, (new Vector3(0, prevPlaced.obj.transform.position.y + 10, 0)), Quaternion.identity);
         else if (_floor[_num].where == "Left")
-            Instantiate(_floor[_num], (new Vector3(prevPlaced.transform.position.x - 13,0 , 0)), Quaternion.identity);
+            Instantiate(_floor[_num].obj, (new Vector3(prevPlaced.obj.transform.position.x - 12,0 , 0)), Quaternion.identity);
         else if (_floor[_num].where == "Down")
-            Instantiate(_floor[_num], (new Vector3(prevPlaced.transform.position.x + 13,0 , 0)), Quaternion.identity);
+            Instantiate(_floor[_num].obj, (new Vector3(prevPlaced.obj.transform.position.x + 12,0 , 0)), Quaternion.identity);
         prevPlaced = _floor[_num];
+        
     }
 }
